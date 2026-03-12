@@ -1082,7 +1082,7 @@
             const sources = allData['데이터출처'].map(s => `
                 <div class="source-item">
                     <span>${s.출처} (신뢰도: ${s.신뢰도 || '-'})</span>
-                    ${s.URL ? `<a href="${s.URL}" target="_blank" class="source-link">바로가기 →</a>` : ''}
+                    ${s.URL ? `<a href="${s.URL}" target="_blank" rel="noopener noreferrer" class="source-link">바로가기 →</a>` : ''}
                 </div>
             `).join('');
 
