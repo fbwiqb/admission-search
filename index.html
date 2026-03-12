@@ -665,7 +665,7 @@
         let allData = {};
         let currentTab = '전체검색';
         let searchQuery = '';
-        let filters = { 최저: '전체', 권역: '전체' };
+        let filters = { 최저: '전체', 권역: '전체', 유형: '전체' };
         let comparisonItems = [];
 
         const tabConfig = {
@@ -720,7 +720,7 @@
 
         function changeTab(tab) {
             currentTab = tab;
-            filters = { 최저: '전체', 권역: '전체' };
+            filters = { 최저: '전체', 권역: '전체', 유형: '전체' };
             renderTabs();
             renderFilters();
             renderContent();
@@ -730,7 +730,18 @@
             const filtersDiv = document.getElementById('filters');
             let html = '';
 
-            if (currentTab !== '변경사항') {
+            if (currentTab === '고른기회') {
+                const types = getUniqueValues('전형유형');
+                html += `
+                    <div class="filter-group">
+                        <span class="filter-label">유형:</span>
+                        <button class="filter-chip ${filters.유형 === '전체' ? 'active' : ''}" onclick="setFilter('유형', '전체')">전체</button>
+                        ${types.map(t =>
+                            `<button class="filter-chip ${filters.유형 === t ? 'active' : ''}" onclick="setFilter('유형', '${t}')">${t}</button>`
+                        ).join('')}
+                    </div>
+                `;
+            } else if (currentTab !== '변경사항') {
                 html += `
                     <div class="filter-group">
                         <span class="filter-label">최저:</span>
@@ -843,6 +854,10 @@
                 data = data.filter(item => item.권역 === filters.권역);
             }
 
+            if (filters.유형 !== '전체') {
+                data = data.filter(item => item.전형유형 === filters.유형);
+            }
+
             return data;
         }
 
@@ -905,9 +920,13 @@
         function getCardFields(item) {
             const fields = [];
 
+            if (item.대상) fields.push({ label: '대상', value: item.대상 });
+            if (item.지원자격 && item._sheet === '고른기회') fields.push({ label: '지원자격', value: item.지원자격 });
             if (item.모집인원) fields.push({ label: '모집인원', value: item.모집인원 });
             if (item.최저유무) fields.push({ label: '최저', value: item.최저유무 });
             if (item.최저내용) fields.push({ label: '최저내용', value: item.최저내용 });
+            if (item.탐구제한 && item.탐구제한 !== '-') fields.push({ label: '탐구제한', value: item.탐구제한 });
+            if (item.수학제한 && item.수학제한 !== '-') fields.push({ label: '수학제한', value: item.수학제한 });
             if (item.전형방법) fields.push({ label: '전형방법', value: item.전형방법 });
             if (item.서류비율) fields.push({ label: '서류', value: item.서류비율 });
             if (item.면접비율) fields.push({ label: '면접', value: item.면접비율 });
@@ -920,10 +939,20 @@
             if (item.권역) fields.push({ label: '권역', value: item.권역 });
             if (item.캠퍼스) fields.push({ label: '캠퍼스', value: item.캠퍼스 });
 
-            return fields.slice(0, 6);
+            return fields.slice(0, 8);
         }
 
+        const opportunityEmoji = {
+            '농어촌': '🌾', '지역인재': '📍', '기초생활': '🤝', '저소득': '🤝',
+            '사회배려': '💛', '다자녀': '👨‍👩‍👧‍👦', '한부모': '👨‍👧', '특성화고': '🏭',
+            '장애인': '♿', '서해5도': '🏝️', '기회균형': '⚖️', '사회통합': '🌈',
+            '특수교육/북한이탈': '🕊️'
+        };
+
         function getEmoji(item) {
+            if (item._sheet === '고른기회' && item.전형유형) {
+                return opportunityEmoji[item.전형유형] || '🌱';
+            }
             const text = JSON.stringify(item).toLowerCase();
             if (text.includes('의대') || text.includes('의학')) return '⚕️';
             if (text.includes('약대') || text.includes('약학')) return '💊';
@@ -941,6 +970,8 @@
             if (data.모집인원) text += `모집인원: ${data.모집인원}\n`;
             if (data.최저유무) text += `최저: ${data.최저유무}\n`;
             if (data.최저내용) text += `최저내용: ${data.최저내용}\n`;
+            if (data.탐구제한) text += `탐구제한: ${data.탐구제한}\n`;
+            if (data.수학제한) text += `수학제한: ${data.수학제한}\n`;
             if (data.전형방법) text += `전형방법: ${data.전형방법}\n`;
             if (data['2027변경사항']) text += `변경사항: ${data['2027변경사항']}\n`;
 
