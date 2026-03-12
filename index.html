@@ -1,0 +1,1114 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2027 대입전형 검색 - 충남삼성고등학교</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Pretendard', 'Noto Sans KR', sans-serif;
+            background: #f0f9ff;
+            color: #1e293b;
+            line-height: 1.6;
+        }
+
+        .header {
+            background: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            padding: 1.5rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .header-logo {
+            height: 50px;
+        }
+
+        .header-text h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #1e3a5f;
+            margin-bottom: 0.25rem;
+        }
+
+        .header-text p {
+            font-size: 0.875rem;
+            color: #64748b;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border-left: 4px solid #0ea5e9;
+        }
+
+        .stat-card h3 {
+            font-size: 0.875rem;
+            color: #64748b;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .stat-card .number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1e3a5f;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            background: white;
+            padding: 1rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .tab {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            background: #f1f5f9;
+            color: #475569;
+            font-size: 0.9375rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .tab:hover {
+            background: #e2e8f0;
+        }
+
+        .tab.active {
+            background: #1e3a5f;
+            color: white;
+        }
+
+        .search-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            margin-bottom: 2rem;
+        }
+
+        .search-box {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 1rem 1rem 1rem 3rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.2s;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #0ea5e9;
+        }
+
+        .filters {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .filter-label {
+            font-size: 0.875rem;
+            color: #64748b;
+            font-weight: 600;
+        }
+
+        .filter-chip {
+            padding: 0.5rem 1rem;
+            border: 1px solid #cbd5e1;
+            background: white;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .filter-chip:hover {
+            background: #f1f5f9;
+        }
+
+        .filter-chip.active {
+            background: #0ea5e9;
+            color: white;
+            border-color: #0ea5e9;
+        }
+
+        .result-count {
+            font-size: 0.9375rem;
+            color: #475569;
+            margin-bottom: 1rem;
+            font-weight: 500;
+        }
+
+        .result-count strong {
+            color: #0369a1;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 1rem;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #1e3a5f;
+            margin-bottom: 0.25rem;
+        }
+
+        .card-subtitle {
+            font-size: 0.9375rem;
+            color: #64748b;
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-icon {
+            padding: 0.5rem;
+            border: 1px solid #cbd5e1;
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 1rem;
+        }
+
+        .btn-icon:hover {
+            background: #f1f5f9;
+        }
+
+        .card-info {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .info-item {
+            font-size: 0.875rem;
+        }
+
+        .info-label {
+            color: #64748b;
+            font-weight: 500;
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+
+        .info-value {
+            color: #1e293b;
+            font-weight: 600;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-top: 0.5rem;
+        }
+
+        .badge-warning {
+            background: #fed7aa;
+            color: #9a3412;
+        }
+
+        .badge-success {
+            background: #bbf7d0;
+            color: #166534;
+        }
+
+        .badge-info {
+            background: #bfdbfe;
+            color: #1e40af;
+        }
+
+        .comparison-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #1e3a5f;
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 -4px 16px rgba(0,0,0,0.2);
+            transform: translateY(100%);
+            transition: transform 0.3s;
+        }
+
+        .comparison-bar.show {
+            transform: translateY(0);
+        }
+
+        .comparison-count {
+            font-weight: 600;
+        }
+
+        .btn-primary {
+            padding: 0.75rem 2rem;
+            background: #0ea5e9;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-primary:hover {
+            background: #0369a1;
+        }
+
+        .btn-secondary {
+            padding: 0.75rem 2rem;
+            background: transparent;
+            color: white;
+            border: 1px solid white;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 200;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+
+        .modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            max-width: 1200px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 2rem;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1e3a5f;
+        }
+
+        .btn-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #64748b;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .comparison-table th,
+        .comparison-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .comparison-table th {
+            background: #f1f5f9;
+            font-weight: 600;
+            color: #475569;
+        }
+
+        .comparison-table td {
+            color: #1e293b;
+        }
+
+        .loading {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 300px;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #e2e8f0;
+            border-top-color: #0ea5e9;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: #64748b;
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .empty-state-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .scroll-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 50px;
+            height: 50px;
+            background: #1e3a5f;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .scroll-top.show {
+            opacity: 1;
+        }
+
+        .footer {
+            background: white;
+            padding: 2rem;
+            margin-top: 4rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .footer-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #1e3a5f;
+            margin-bottom: 1rem;
+        }
+
+        .source-list {
+            display: grid;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            color: #64748b;
+        }
+
+        .source-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem;
+            background: #f1f5f9;
+            border-radius: 6px;
+        }
+
+        .source-link {
+            color: #0369a1;
+            text-decoration: none;
+        }
+
+        .source-link:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 1024px) {
+            .cards-grid {
+                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            }
+
+            .card-info {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .header-content {
+                flex-direction: column;
+                align-items: start;
+            }
+
+            .header-logo {
+                height: 40px;
+            }
+
+            .header-text h1 {
+                font-size: 1.25rem;
+            }
+
+            .container {
+                padding: 1rem;
+            }
+
+            .tabs {
+                padding: 0.75rem;
+            }
+
+            .tab {
+                padding: 0.5rem 1rem;
+                font-size: 0.875rem;
+            }
+
+            .search-section {
+                padding: 1rem;
+            }
+
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .comparison-bar {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
+            }
+
+            .modal-content {
+                padding: 1rem;
+            }
+
+            .comparison-table {
+                font-size: 0.875rem;
+            }
+
+            .comparison-table th,
+            .comparison-table td {
+                padding: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <img src="logo.png" alt="CNSA Logo" class="header-logo">
+            <div class="header-text">
+                <h1>2027 대입전형 검색</h1>
+                <p>충남삼성고등학교 진학정보 시스템</p>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <div id="stats" class="stats-grid" style="display:none;"></div>
+
+        <div class="tabs" id="tabs"></div>
+
+        <div class="search-section">
+            <div class="search-box">
+                <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <path d="m21 21-4.35-4.35"></path>
+                </svg>
+                <input type="text" class="search-input" id="searchInput" placeholder="대학명, 전형명, 모집단위 등을 검색하세요">
+            </div>
+            <div class="filters" id="filters"></div>
+        </div>
+
+        <div class="result-count" id="resultCount"></div>
+
+        <div id="content">
+            <div class="loading">
+                <div class="spinner"></div>
+                <p style="margin-top:1rem;color:#64748b;">데이터를 불러오는 중...</p>
+            </div>
+        </div>
+
+        <div class="footer" id="footer" style="display:none;"></div>
+    </main>
+
+    <div class="comparison-bar" id="comparisonBar">
+        <div class="comparison-count" id="comparisonCount"></div>
+        <div style="display:flex;gap:1rem;">
+            <button class="btn-secondary" onclick="clearComparison()">전체 해제</button>
+            <button class="btn-primary" onclick="showComparison()">비교하기</button>
+        </div>
+    </div>
+
+    <div class="modal" id="comparisonModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">전형 비교</h2>
+                <button class="btn-close" onclick="closeComparison()">&times;</button>
+            </div>
+            <div id="comparisonContent"></div>
+        </div>
+    </div>
+
+    <button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+    <script>
+        let allData = {};
+        let currentTab = '전체검색';
+        let searchQuery = '';
+        let filters = { 최저: '전체', 권역: '전체' };
+        let comparisonItems = [];
+
+        const tabConfig = {
+            '전체검색': ['수시_교과', '수시_종합', '논술', '정시', '의약학', '교대', '고른기회', '경기권_국공립'],
+            '수시': ['수시_교과', '수시_종합'],
+            '논술': ['논술'],
+            '정시': ['정시'],
+            '의약학': ['의약학'],
+            '교대': ['교대'],
+            '고른기회': ['고른기회'],
+            '변경사항': ['2027_주요변경']
+        };
+
+        const emojiMap = {
+            '서울': '🏛️',
+            '수도권': '🌆',
+            '경기': '🏫',
+            '지방': '🌄',
+            '국립': '🏛️',
+            '사립': '🎓',
+            '의대': '⚕️',
+            '약대': '💊',
+            '교대': '👨‍🏫',
+            '기회': '🌱'
+        };
+
+        async function init() {
+            try {
+                const response = await fetch('data.json');
+                allData = await response.json();
+                renderTabs();
+                renderFilters();
+                renderContent();
+                renderFooter();
+            } catch (error) {
+                document.getElementById('content').innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">⚠️</div>
+                        <div class="empty-state-title">데이터를 불러올 수 없습니다</div>
+                        <p>data.json 파일을 확인해주세요</p>
+                    </div>
+                `;
+            }
+        }
+
+        function renderTabs() {
+            const tabs = document.getElementById('tabs');
+            tabs.innerHTML = Object.keys(tabConfig).map(tab =>
+                `<button class="tab ${tab === currentTab ? 'active' : ''}" onclick="changeTab('${tab}')">${tab}</button>`
+            ).join('');
+        }
+
+        function changeTab(tab) {
+            currentTab = tab;
+            filters = { 최저: '전체', 권역: '전체' };
+            renderTabs();
+            renderFilters();
+            renderContent();
+        }
+
+        function renderFilters() {
+            const filtersDiv = document.getElementById('filters');
+            let html = '';
+
+            if (currentTab !== '변경사항') {
+                html += `
+                    <div class="filter-group">
+                        <span class="filter-label">최저:</span>
+                        <button class="filter-chip ${filters.최저 === '전체' ? 'active' : ''}" onclick="setFilter('최저', '전체')">전체</button>
+                        <button class="filter-chip ${filters.최저 === '최저O' ? 'active' : ''}" onclick="setFilter('최저', '최저O')">최저 O</button>
+                        <button class="filter-chip ${filters.최저 === '최저X' ? 'active' : ''}" onclick="setFilter('최저', '최저X')">최저 X</button>
+                    </div>
+                `;
+
+                const regions = getUniqueValues('권역');
+                if (regions.length > 0) {
+                    html += `
+                        <div class="filter-group">
+                            <span class="filter-label">권역:</span>
+                            <button class="filter-chip ${filters.권역 === '전체' ? 'active' : ''}" onclick="setFilter('권역', '전체')">전체</button>
+                            ${regions.map(r =>
+                                `<button class="filter-chip ${filters.권역 === r ? 'active' : ''}" onclick="setFilter('권역', '${r}')">${r}</button>`
+                            ).join('')}
+                        </div>
+                    `;
+                }
+            }
+
+            filtersDiv.innerHTML = html;
+        }
+
+        function getUniqueValues(field) {
+            const values = new Set();
+            tabConfig[currentTab].forEach(sheet => {
+                if (allData[sheet]) {
+                    allData[sheet].forEach(row => {
+                        if (row[field] && row[field] !== '') {
+                            values.add(row[field]);
+                        }
+                    });
+                }
+            });
+            return Array.from(values).sort();
+        }
+
+        function setFilter(type, value) {
+            filters[type] = value;
+            renderContent();
+        }
+
+        let searchTimeout;
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                searchQuery = e.target.value.toLowerCase();
+                renderContent();
+            }, 200);
+        });
+
+        function renderContent() {
+            if (currentTab === '전체검색') {
+                renderStats();
+            } else {
+                document.getElementById('stats').style.display = 'none';
+            }
+
+            const data = getFilteredData();
+            const contentDiv = document.getElementById('content');
+
+            if (data.length === 0) {
+                contentDiv.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">🔍</div>
+                        <div class="empty-state-title">검색 결과가 없습니다</div>
+                        <p>다른 검색어나 필터를 시도해보세요</p>
+                    </div>
+                `;
+                document.getElementById('resultCount').textContent = '';
+                return;
+            }
+
+            document.getElementById('resultCount').innerHTML = `<strong>${data.length}</strong>개 결과`;
+
+            const cardsHtml = data.map((item, index) => renderCard(item, index)).join('');
+            contentDiv.innerHTML = `<div class="cards-grid">${cardsHtml}</div>`;
+        }
+
+        function getFilteredData() {
+            let data = [];
+
+            tabConfig[currentTab].forEach(sheet => {
+                if (allData[sheet]) {
+                    allData[sheet].forEach((row, index) => {
+                        data.push({ ...row, _sheet: sheet, _index: index });
+                    });
+                }
+            });
+
+            if (searchQuery) {
+                data = data.filter(item => {
+                    const searchText = Object.values(item).join(' ').toLowerCase();
+                    return searchText.includes(searchQuery);
+                });
+            }
+
+            if (filters.최저 !== '전체') {
+                if (filters.최저 === '최저O') {
+                    data = data.filter(item => item.최저유무 === 'O' || item.최저유무 === '있음');
+                } else {
+                    data = data.filter(item => item.최저유무 === 'X' || item.최저유무 === '없음');
+                }
+            }
+
+            if (filters.권역 !== '전체') {
+                data = data.filter(item => item.권역 === filters.권역);
+            }
+
+            return data;
+        }
+
+        function renderCard(item, index) {
+            const emoji = getEmoji(item);
+            const title = item.대학명 || item.카테고리 || '정보';
+            const subtitle = item.전형명 || item.변경내용?.substring(0, 50) || '';
+            const uniqueId = `${item._sheet}_${item._index}`;
+            const isSelected = comparisonItems.some(i => i.id === uniqueId);
+
+            let infoHtml = '';
+
+            if (item._sheet === '2027_주요변경') {
+                infoHtml = `
+                    <div class="info-item" style="grid-column: 1 / -1;">
+                        <span class="info-label">변경내용</span>
+                        <span class="info-value">${item.변경내용 || '-'}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">영향</span>
+                        <span class="info-value">${item.영향 || '-'}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">출처</span>
+                        <span class="info-value">${item.출처 || '-'}</span>
+                    </div>
+                `;
+            } else {
+                const fields = getCardFields(item);
+                infoHtml = fields.map(f => `
+                    <div class="info-item">
+                        <span class="info-label">${f.label}</span>
+                        <span class="info-value">${f.value}</span>
+                    </div>
+                `).join('');
+            }
+
+            const changesBadge = item['2027변경사항'] && item['2027변경사항'] !== '-'
+                ? `<div class="badge badge-warning">🔔 ${item['2027변경사항']}</div>`
+                : '';
+
+            return `
+                <div class="card">
+                    <div class="card-header">
+                        <div>
+                            <div class="card-title">${emoji} ${title}</div>
+                            ${subtitle ? `<div class="card-subtitle">${subtitle}</div>` : ''}
+                        </div>
+                        <div class="card-actions">
+                            <button class="btn-icon" onclick="copyToClipboard(${index})" title="복사">📋</button>
+                            <button class="btn-icon ${isSelected ? 'active' : ''}" onclick="toggleComparison('${uniqueId}', ${index})" title="비교함">⚖️</button>
+                        </div>
+                    </div>
+                    <div class="card-info">${infoHtml}</div>
+                    ${changesBadge}
+                </div>
+            `;
+        }
+
+        function getCardFields(item) {
+            const fields = [];
+
+            if (item.모집인원) fields.push({ label: '모집인원', value: item.모집인원 });
+            if (item.최저유무) fields.push({ label: '최저', value: item.최저유무 });
+            if (item.최저내용) fields.push({ label: '최저내용', value: item.최저내용 });
+            if (item.전형방법) fields.push({ label: '전형방법', value: item.전형방법 });
+            if (item.서류비율) fields.push({ label: '서류', value: item.서류비율 });
+            if (item.면접비율) fields.push({ label: '면접', value: item.면접비율 });
+            if (item.논술비율) fields.push({ label: '논술', value: item.논술비율 });
+            if (item.학생부비율) fields.push({ label: '학생부', value: item.학생부비율 });
+            if (item.논술유형) fields.push({ label: '논술유형', value: item.논술유형 });
+            if (item.면접유형) fields.push({ label: '면접유형', value: item.면접유형 });
+            if (item.모집군) fields.push({ label: '모집군', value: item.모집군 });
+            if (item.학과) fields.push({ label: '학과', value: item.학과 });
+            if (item.권역) fields.push({ label: '권역', value: item.권역 });
+            if (item.캠퍼스) fields.push({ label: '캠퍼스', value: item.캠퍼스 });
+
+            return fields.slice(0, 6);
+        }
+
+        function getEmoji(item) {
+            const text = JSON.stringify(item).toLowerCase();
+            if (text.includes('의대') || text.includes('의학')) return '⚕️';
+            if (text.includes('약대') || text.includes('약학')) return '💊';
+            if (text.includes('교대') || text.includes('교육대')) return '👨‍🏫';
+            if (text.includes('서울')) return '🏛️';
+            if (text.includes('수도권') || text.includes('경기')) return '🌆';
+            if (text.includes('국립')) return '🏛️';
+            return '🎓';
+        }
+
+        function copyToClipboard(index) {
+            const data = getFilteredData()[index];
+            let text = `${data.대학명 || data.카테고리}\n`;
+            if (data.전형명) text += `전형: ${data.전형명}\n`;
+            if (data.모집인원) text += `모집인원: ${data.모집인원}\n`;
+            if (data.최저유무) text += `최저: ${data.최저유무}\n`;
+            if (data.최저내용) text += `최저내용: ${data.최저내용}\n`;
+            if (data.전형방법) text += `전형방법: ${data.전형방법}\n`;
+            if (data['2027변경사항']) text += `변경사항: ${data['2027변경사항']}\n`;
+
+            navigator.clipboard.writeText(text).then(() => {
+                alert('클립보드에 복사되었습니다');
+            });
+        }
+
+        function toggleComparison(id, index) {
+            const existingIndex = comparisonItems.findIndex(i => i.id === id);
+
+            if (existingIndex >= 0) {
+                comparisonItems.splice(existingIndex, 1);
+            } else {
+                if (comparisonItems.length >= 4) {
+                    alert('최대 4개까지만 비교할 수 있습니다');
+                    return;
+                }
+                const data = getFilteredData()[index];
+                comparisonItems.push({ id, data });
+            }
+
+            updateComparisonBar();
+            renderContent();
+        }
+
+        function updateComparisonBar() {
+            const bar = document.getElementById('comparisonBar');
+            const count = document.getElementById('comparisonCount');
+
+            if (comparisonItems.length > 0) {
+                bar.classList.add('show');
+                count.textContent = `${comparisonItems.length}개 항목 선택됨`;
+            } else {
+                bar.classList.remove('show');
+            }
+        }
+
+        function clearComparison() {
+            comparisonItems = [];
+            updateComparisonBar();
+            renderContent();
+        }
+
+        function showComparison() {
+            if (comparisonItems.length < 2) {
+                alert('최소 2개 항목을 선택해주세요');
+                return;
+            }
+
+            const modal = document.getElementById('comparisonModal');
+            const content = document.getElementById('comparisonContent');
+
+            const allFields = new Set();
+            comparisonItems.forEach(item => {
+                Object.keys(item.data).forEach(key => {
+                    if (!key.startsWith('_')) {
+                        allFields.add(key);
+                    }
+                });
+            });
+
+            let tableHtml = '<table class="comparison-table"><thead><tr><th>항목</th>';
+            comparisonItems.forEach(item => {
+                tableHtml += `<th>${item.data.대학명 || item.data.카테고리}</th>`;
+            });
+            tableHtml += '</tr></thead><tbody>';
+
+            allFields.forEach(field => {
+                tableHtml += `<tr><td>${field}</td>`;
+                comparisonItems.forEach(item => {
+                    tableHtml += `<td>${item.data[field] || '-'}</td>`;
+                });
+                tableHtml += '</tr>';
+            });
+
+            tableHtml += '</tbody></table>';
+            content.innerHTML = tableHtml;
+            modal.classList.add('show');
+        }
+
+        function closeComparison() {
+            document.getElementById('comparisonModal').classList.remove('show');
+        }
+
+        function renderStats() {
+            const statsDiv = document.getElementById('stats');
+
+            if (!allData['전형요약']) {
+                statsDiv.style.display = 'none';
+                return;
+            }
+
+            const 총전형 = allData['수시_교과']?.length + allData['수시_종합']?.length + allData['논술']?.length + allData['정시']?.length || 0;
+
+            let 최저적용 = 0;
+            let 최저총계 = 0;
+            ['수시_교과', '수시_종합', '논술', '의약학'].forEach(sheet => {
+                if (allData[sheet]) {
+                    allData[sheet].forEach(row => {
+                        최저총계++;
+                        if (row.최저유무 === 'O' || row.최저유무 === '있음') 최저적용++;
+                    });
+                }
+            });
+            const 최저비율 = 최저총계 > 0 ? Math.round((최저적용 / 최저총계) * 100) : 0;
+
+            const 논술대학 = allData['논술']?.length || 0;
+            const 고른기회 = allData['고른기회']?.length || 0;
+
+            statsDiv.innerHTML = `
+                <div class="stat-card">
+                    <h3>총 전형 수</h3>
+                    <div class="number">${총전형}</div>
+                </div>
+                <div class="stat-card">
+                    <h3>최저 적용 비율</h3>
+                    <div class="number">${최저비율}%</div>
+                </div>
+                <div class="stat-card">
+                    <h3>논술 전형</h3>
+                    <div class="number">${논술대학}</div>
+                </div>
+                <div class="stat-card">
+                    <h3>고른기회 전형</h3>
+                    <div class="number">${고른기회}</div>
+                </div>
+            `;
+            statsDiv.style.display = 'grid';
+        }
+
+        function renderFooter() {
+            const footer = document.getElementById('footer');
+
+            if (!allData['데이터출처']) {
+                return;
+            }
+
+            const sources = allData['데이터출처'].map(s => `
+                <div class="source-item">
+                    <span>${s.출처} (신뢰도: ${s.신뢰도 || '-'})</span>
+                    ${s.URL ? `<a href="${s.URL}" target="_blank" class="source-link">바로가기 →</a>` : ''}
+                </div>
+            `).join('');
+
+            footer.innerHTML = `
+                <div class="footer-title">데이터 출처</div>
+                <div class="source-list">${sources}</div>
+            `;
+            footer.style.display = 'block';
+        }
+
+        window.addEventListener('scroll', () => {
+            const scrollTop = document.getElementById('scrollTop');
+            if (window.scrollY > 500) {
+                scrollTop.classList.add('show');
+            } else {
+                scrollTop.classList.remove('show');
+            }
+        });
+
+        document.getElementById('comparisonModal').addEventListener('click', (e) => {
+            if (e.target.id === 'comparisonModal') {
+                closeComparison();
+            }
+        });
+
+        init();
+    </script>
+</body>
+</html>
