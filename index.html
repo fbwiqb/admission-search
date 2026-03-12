@@ -309,6 +309,21 @@
             color: #1e40af;
         }
 
+        .badge-type {
+            display: inline-block;
+            padding: 0.15rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-left: 0.5rem;
+            vertical-align: middle;
+        }
+
+        .badge-type.교과 { background: #dcfce7; color: #166534; }
+        .badge-type.종합 { background: #dbeafe; color: #1e40af; }
+        .badge-type.논술 { background: #fef3c7; color: #92400e; }
+        .badge-type.정시 { background: #fce7f3; color: #9d174d; }
+
         .comparison-bar {
             position: fixed;
             bottom: 0;
@@ -666,7 +681,7 @@
         let allData = {};
         let currentTab = '전체검색';
         let searchQuery = '';
-        let filters = { 최저: '전체', 권역: '전체', 유형: '전체' };
+        let filters = { 최저: '전체', 권역: '전체', 유형: '전체', 면접: '전체', 전형구분: '전체' };
         let comparisonItems = [];
 
         const tabConfig = {
@@ -721,7 +736,7 @@
 
         function changeTab(tab) {
             currentTab = tab;
-            filters = { 최저: '전체', 권역: '전체', 유형: '전체' };
+            filters = { 최저: '전체', 권역: '전체', 유형: '전체', 면접: '전체', 전형구분: '전체' };
             renderTabs();
             renderFilters();
             renderContent();
@@ -751,6 +766,28 @@
                         <button class="filter-chip ${filters.최저 === '최저X' ? 'active' : ''}" onclick="setFilter('최저', '최저X')">최저 X</button>
                     </div>
                 `;
+
+                html += `
+                    <div class="filter-group">
+                        <span class="filter-label">면접:</span>
+                        <button class="filter-chip ${filters.면접 === '전체' ? 'active' : ''}" onclick="setFilter('면접', '전체')">전체</button>
+                        <button class="filter-chip ${filters.면접 === '면접O' ? 'active' : ''}" onclick="setFilter('면접', '면접O')">면접 O</button>
+                        <button class="filter-chip ${filters.면접 === '면접X' ? 'active' : ''}" onclick="setFilter('면접', '면접X')">면접 X</button>
+                    </div>
+                `;
+
+                if (currentTab === '전체검색') {
+                    html += `
+                        <div class="filter-group">
+                            <span class="filter-label">구분:</span>
+                            <button class="filter-chip ${filters.전형구분 === '전체' ? 'active' : ''}" onclick="setFilter('전형구분', '전체')">전체</button>
+                            <button class="filter-chip ${filters.전형구분 === '교과' ? 'active' : ''}" onclick="setFilter('전형구분', '교과')">교과</button>
+                            <button class="filter-chip ${filters.전형구분 === '종합' ? 'active' : ''}" onclick="setFilter('전형구분', '종합')">종합</button>
+                            <button class="filter-chip ${filters.전형구분 === '논술' ? 'active' : ''}" onclick="setFilter('전형구분', '논술')">논술</button>
+                            <button class="filter-chip ${filters.전형구분 === '정시' ? 'active' : ''}" onclick="setFilter('전형구분', '정시')">정시</button>
+                        </div>
+                    `;
+                }
 
                 const regions = getUniqueValues('권역');
                 if (regions.length > 0) {
@@ -859,6 +896,18 @@
                 data = data.filter(item => item.전형유형 === filters.유형);
             }
 
+            if (filters.면접 !== '전체') {
+                if (filters.면접 === '면접O') {
+                    data = data.filter(item => item.면접유무 === 'O');
+                } else {
+                    data = data.filter(item => item.면접유무 === 'X');
+                }
+            }
+
+            if (filters.전형구분 !== '전체') {
+                data = data.filter(item => item.전형구분 === filters.전형구분);
+            }
+
             return data;
         }
 
@@ -899,12 +948,13 @@
             const changesBadge = item['2027변경사항'] && item['2027변경사항'] !== '-'
                 ? `<div class="badge badge-warning">🔔 ${item['2027변경사항']}</div>`
                 : '';
+            const typeBadge = item.전형구분 ? `<span class="badge-type ${item.전형구분}">${item.전형구분}</span>` : '';
 
             return `
                 <div class="card">
                     <div class="card-header">
                         <div>
-                            <div class="card-title">${emoji} ${title}</div>
+                            <div class="card-title">${emoji} ${title}${typeBadge}</div>
                             ${subtitle ? `<div class="card-subtitle">${subtitle}</div>` : ''}
                         </div>
                         <div class="card-actions">
@@ -925,7 +975,7 @@
             return result;
         }
 
-        const FORMAT_FIELDS = new Set(['최저내용', '탐구제한', '수학제한', '영어기준']);
+        const FORMAT_FIELDS = new Set(['최저내용', '탐구제한', '수학제한', '영어기준', '2차전형']);
 
         function getCardFields(item) {
             const fields = [];
@@ -933,13 +983,13 @@
             if (item.대상) fields.push({ label: '대상', value: item.대상 });
             if (item.지원자격 && item._sheet === '고른기회') fields.push({ label: '지원자격', value: item.지원자격 });
             if (item.모집인원) fields.push({ label: '모집인원', value: item.모집인원 });
+            if (item.면접유무 && item.면접유무 !== '-') fields.push({ label: '면접', value: item.면접유무 === 'O' ? 'O (' + (item['2차전형'] || '') + ')' : 'X' });
             if (item.최저유무) fields.push({ label: '최저', value: item.최저유무 });
             if (item.최저내용) fields.push({ label: '최저내용', value: formatFieldValue(item.최저내용) });
             if (item.탐구제한 && item.탐구제한 !== '-') fields.push({ label: '탐구제한', value: formatFieldValue(item.탐구제한) });
             if (item.수학제한 && item.수학제한 !== '-') fields.push({ label: '수학제한', value: formatFieldValue(item.수학제한) });
             if (item.전형방법) fields.push({ label: '전형방법', value: item.전형방법 });
             if (item.서류비율) fields.push({ label: '서류', value: item.서류비율 });
-            if (item.면접비율) fields.push({ label: '면접', value: item.면접비율 });
             if (item.논술비율) fields.push({ label: '논술', value: item.논술비율 });
             if (item.학생부비율) fields.push({ label: '학생부', value: item.학생부비율 });
             if (item.논술유형) fields.push({ label: '논술유형', value: item.논술유형 });
@@ -949,7 +999,7 @@
             if (item.권역) fields.push({ label: '권역', value: item.권역 });
             if (item.캠퍼스) fields.push({ label: '캠퍼스', value: item.캠퍼스 });
 
-            return fields.slice(0, 8);
+            return fields.slice(0, 10);
         }
 
         const opportunityEmoji = {
@@ -982,6 +1032,8 @@
             if (data.최저내용) text += `최저내용: ${data.최저내용}\n`;
             if (data.탐구제한) text += `탐구제한: ${data.탐구제한}\n`;
             if (data.수학제한) text += `수학제한: ${data.수학제한}\n`;
+            if (data.면접유무) text += `면접: ${data.면접유무}${data['2차전형'] && data['2차전형'] !== '없음' ? ' (' + data['2차전형'] + ')' : ''}\n`;
+            if (data.전형구분) text += `전형구분: ${data.전형구분}\n`;
             if (data.전형방법) text += `전형방법: ${data.전형방법}\n`;
             if (data['2027변경사항']) text += `변경사항: ${data['2027변경사항']}\n`;
 
