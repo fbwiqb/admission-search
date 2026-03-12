@@ -180,6 +180,7 @@
             font-size: 0.875rem;
             cursor: pointer;
             transition: all 0.2s;
+            white-space: nowrap;
         }
 
         .filter-chip:hover {
@@ -917,6 +918,15 @@
             `;
         }
 
+        function formatFieldValue(val) {
+            if (!val || typeof val !== 'string') return val;
+            let result = val.replace(/ \/ /g, '<br>');
+            result = result.replace(/, (인문|자연|영\d|의예|약학|의약학|간호)/g, '<br>$1');
+            return result;
+        }
+
+        const FORMAT_FIELDS = new Set(['최저내용', '탐구제한', '수학제한', '영어기준']);
+
         function getCardFields(item) {
             const fields = [];
 
@@ -924,9 +934,9 @@
             if (item.지원자격 && item._sheet === '고른기회') fields.push({ label: '지원자격', value: item.지원자격 });
             if (item.모집인원) fields.push({ label: '모집인원', value: item.모집인원 });
             if (item.최저유무) fields.push({ label: '최저', value: item.최저유무 });
-            if (item.최저내용) fields.push({ label: '최저내용', value: item.최저내용 });
-            if (item.탐구제한 && item.탐구제한 !== '-') fields.push({ label: '탐구제한', value: item.탐구제한 });
-            if (item.수학제한 && item.수학제한 !== '-') fields.push({ label: '수학제한', value: item.수학제한 });
+            if (item.최저내용) fields.push({ label: '최저내용', value: formatFieldValue(item.최저내용) });
+            if (item.탐구제한 && item.탐구제한 !== '-') fields.push({ label: '탐구제한', value: formatFieldValue(item.탐구제한) });
+            if (item.수학제한 && item.수학제한 !== '-') fields.push({ label: '수학제한', value: formatFieldValue(item.수학제한) });
             if (item.전형방법) fields.push({ label: '전형방법', value: item.전형방법 });
             if (item.서류비율) fields.push({ label: '서류', value: item.서류비율 });
             if (item.면접비율) fields.push({ label: '면접', value: item.면접비율 });
@@ -1043,7 +1053,8 @@
             allFields.forEach(field => {
                 tableHtml += `<tr><td>${field}</td>`;
                 comparisonItems.forEach(item => {
-                    tableHtml += `<td>${item.data[field] || '-'}</td>`;
+                    const val = item.data[field] || '-';
+                    tableHtml += `<td>${FORMAT_FIELDS.has(field) ? formatFieldValue(val) : val}</td>`;
                 });
                 tableHtml += '</tr>';
             });
