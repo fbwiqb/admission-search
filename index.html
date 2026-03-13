@@ -1231,7 +1231,7 @@
             return result;
         }
 
-        const FORMAT_FIELDS = new Set(['최저내용', '탐구제한', '수학제한', '영어기준', '2차전형']);
+        const FORMAT_FIELDS = new Set(['최저내용', '탐구제한', '수학제한', '영어기준', '영어반영', '2차전형']);
 
         function getCardFields(item) {
             const fields = [];
@@ -1251,11 +1251,19 @@
             if (item.논술유형) fields.push({ label: '논술유형', value: item.논술유형 });
             if (item.면접유형) fields.push({ label: '면접유형', value: item.면접유형 });
             if (item.모집군) fields.push({ label: '모집군', value: item.모집군 });
+            if (item.국어비율) fields.push({ label: '국어', value: item.국어비율 });
+            if (item.수학비율) fields.push({ label: '수학', value: item.수학비율 });
+            if (item.영어반영) fields.push({ label: '영어반영', value: formatFieldValue(item.영어반영) });
+            if (item.탐구비율) fields.push({ label: '탐구', value: item.탐구비율 });
+            if (item.활용지표) fields.push({ label: '활용지표', value: item.활용지표 });
+            if (item.학생부반영 && item.학생부반영 !== '-') fields.push({ label: '학생부', value: item.학생부반영 });
+            if (item.영어기준) fields.push({ label: '영어기준', value: formatFieldValue(item.영어기준) });
+            if (item.백분위컷) fields.push({ label: '백분위컷', value: item.백분위컷 });
             if (item.학과) fields.push({ label: '학과', value: item.학과 });
             if (item.권역) fields.push({ label: '권역', value: item.권역 });
             if (item.캠퍼스) fields.push({ label: '캠퍼스', value: item.캠퍼스 });
 
-            return fields.slice(0, 10);
+            return fields.slice(0, 12);
         }
 
         const opportunityEmoji = {
