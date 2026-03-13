@@ -1379,20 +1379,22 @@
         function renderFooter() {
             const footer = document.getElementById('footer');
 
-            if (!allData['데이터출처']) {
-                return;
+            let sourcesHtml = '';
+            if (allData['데이터출처']) {
+                const sources = allData['데이터출처'].map(s => `
+                    <div class="source-item">
+                        <span>${s.출처} (신뢰도: ${s.신뢰도 || '-'})</span>
+                        ${s.URL ? `<a href="${s.URL}" target="_blank" rel="noopener noreferrer" class="source-link">바로가기 →</a>` : ''}
+                    </div>
+                `).join('');
+                sourcesHtml = `
+                    <div class="footer-title">데이터 출처</div>
+                    <div class="source-list">${sources}</div>
+                `;
             }
 
-            const sources = allData['데이터출처'].map(s => `
-                <div class="source-item">
-                    <span>${s.출처} (신뢰도: ${s.신뢰도 || '-'})</span>
-                    ${s.URL ? `<a href="${s.URL}" target="_blank" rel="noopener noreferrer" class="source-link">바로가기 →</a>` : ''}
-                </div>
-            `).join('');
-
             footer.innerHTML = `
-                <div class="footer-title">데이터 출처</div>
-                <div class="source-list">${sources}</div>
+                ${sourcesHtml}
                 <div class="footer-bottom">
                     <div class="copyright">
                         &copy; 2025 신도경T &middot; <a href="mailto:pantarei01@cnsa.hs.kr">pantarei01@cnsa.hs.kr</a>
