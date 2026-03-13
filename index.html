@@ -193,6 +193,37 @@
             border-color: #0ea5e9;
         }
 
+        .filter-select {
+            padding: 0.5rem 2rem 0.5rem 1rem;
+            border: 1px solid #cbd5e1;
+            background: white;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2364748b' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 0.75rem center;
+            color: #334155;
+        }
+
+        .filter-select:hover {
+            background-color: #f1f5f9;
+        }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: #0ea5e9;
+        }
+
+        .filter-select.active {
+            background-color: #0ea5e9;
+            color: white;
+            border-color: #0ea5e9;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='white' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+        }
+
         .result-count {
             font-size: 0.9375rem;
             color: #475569;
@@ -837,17 +868,16 @@
         let allData = {};
         let currentTab = '전체검색';
         let searchQuery = '';
-        let filters = { 최저: '전체', 권역: '전체', 유형: '전체', 면접: '전체', 전형구분: '전체' };
+        let filters = { 최저: '전체', 권역: '전체', 유형: '전체', 면접: '전체', 전형구분: '전체', 고른기회: '' };
         let comparisonItems = [];
 
         const tabConfig = {
             '전체검색': ['수시_교과', '수시_종합', '논술', '정시', '의약학', '교대', '고른기회', '경기권_국공립'],
-            '수시': ['수시_교과', '수시_종합'],
+            '수시': ['수시_교과', '수시_종합', '고른기회'],
             '논술': ['논술'],
             '정시': ['정시'],
             '의약학': ['의약학'],
             '교대': ['교대'],
-            '고른기회': ['고른기회'],
             '변경사항': ['2027_주요변경']
         };
 
@@ -892,7 +922,7 @@
 
         function changeTab(tab) {
             currentTab = tab;
-            filters = { 최저: '전체', 권역: '전체', 유형: '전체', 면접: '전체', 전형구분: '전체' };
+            filters = { 최저: '전체', 권역: '전체', 유형: '전체', 면접: '전체', 전형구분: '전체', 고른기회: '' };
             renderTabs();
             renderFilters();
             renderContent();
@@ -902,18 +932,7 @@
             const filtersDiv = document.getElementById('filters');
             let html = '';
 
-            if (currentTab === '고른기회') {
-                const types = getUniqueValues('전형유형');
-                html += `
-                    <div class="filter-group">
-                        <span class="filter-label">유형:</span>
-                        <button class="filter-chip ${filters.유형 === '전체' ? 'active' : ''}" onclick="setFilter('유형', '전체')">전체</button>
-                        ${types.map(t =>
-                            `<button class="filter-chip ${filters.유형 === t ? 'active' : ''}" onclick="setFilter('유형', '${t}')">${t}</button>`
-                        ).join('')}
-                    </div>
-                `;
-            } else if (currentTab !== '변경사항') {
+            if (currentTab !== '변경사항') {
                 html += `
                     <div class="filter-group">
                         <span class="filter-label">최저:</span>
@@ -941,6 +960,30 @@
                             <button class="filter-chip ${filters.전형구분 === '종합' ? 'active' : ''}" onclick="setFilter('전형구분', '종합')">종합</button>
                             <button class="filter-chip ${filters.전형구분 === '논술' ? 'active' : ''}" onclick="setFilter('전형구분', '논술')">논술</button>
                             <button class="filter-chip ${filters.전형구분 === '정시' ? 'active' : ''}" onclick="setFilter('전형구분', '정시')">정시</button>
+                        </div>
+                    `;
+                }
+
+                if (currentTab === '수시' || currentTab === '전체검색') {
+                    const gorunTypes = [];
+                    if (allData['고른기회']) {
+                        const seen = new Set();
+                        allData['고른기회'].forEach(row => {
+                            if (row.전형유형 && !seen.has(row.전형유형)) {
+                                seen.add(row.전형유형);
+                                gorunTypes.push(row.전형유형);
+                            }
+                        });
+                        gorunTypes.sort();
+                    }
+                    html += `
+                        <div class="filter-group">
+                            <span class="filter-label">고른기회:</span>
+                            <select class="filter-select ${filters.고른기회 !== '' ? 'active' : ''}" onchange="setFilter('고른기회', this.value)">
+                                <option value="">미적용</option>
+                                <option value="전체" ${filters.고른기회 === '전체' ? 'selected' : ''}>전체</option>
+                                ${gorunTypes.map(t => `<option value="${t}" ${filters.고른기회 === t ? 'selected' : ''}>${t}</option>`).join('')}
+                            </select>
                         </div>
                     `;
                 }
@@ -978,6 +1021,7 @@
 
         function setFilter(type, value) {
             filters[type] = value;
+            renderFilters();
             renderContent();
         }
 
@@ -1050,6 +1094,16 @@
 
             if (filters.유형 !== '전체') {
                 data = data.filter(item => item.전형유형 === filters.유형);
+            }
+
+            if (filters.고른기회 === '') {
+                if (currentTab === '수시') {
+                    data = data.filter(item => item._sheet !== '고른기회');
+                }
+            } else if (filters.고른기회 === '전체') {
+                data = data.filter(item => item._sheet === '고른기회');
+            } else {
+                data = data.filter(item => item._sheet === '고른기회' && item.전형유형 === filters.고른기회);
             }
 
             if (filters.면접 !== '전체') {
