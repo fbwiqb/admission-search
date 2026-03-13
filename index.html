@@ -552,6 +552,141 @@
             text-decoration: underline;
         }
 
+        .footer-bottom {
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .copyright {
+            font-size: 0.8rem;
+            color: #94a3b8;
+        }
+
+        .copyright a {
+            color: #64748b;
+            text-decoration: none;
+        }
+
+        .copyright a:hover {
+            text-decoration: underline;
+        }
+
+        .btn-report {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.5rem 1rem;
+            font-size: 0.8rem;
+            color: #dc2626;
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-report:hover {
+            background: #fee2e2;
+        }
+
+        .report-modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1100;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .report-modal.show {
+            display: flex;
+        }
+
+        .report-box {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            width: 90%;
+            max-width: 480px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+        }
+
+        .report-box h3 {
+            font-size: 1.1rem;
+            color: #1e3a5f;
+            margin-bottom: 1rem;
+        }
+
+        .report-box label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #475569;
+            margin-bottom: 0.3rem;
+            margin-top: 0.8rem;
+        }
+
+        .report-box select,
+        .report-box input,
+        .report-box textarea {
+            width: 100%;
+            padding: 0.5rem 0.75rem;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            font-family: inherit;
+            box-sizing: border-box;
+        }
+
+        .report-box textarea {
+            height: 80px;
+            resize: vertical;
+        }
+
+        .report-box select:focus,
+        .report-box input:focus,
+        .report-box textarea:focus {
+            outline: none;
+            border-color: #0ea5e9;
+            box-shadow: 0 0 0 2px rgba(14,165,233,0.2);
+        }
+
+        .report-actions {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 1.25rem;
+            justify-content: flex-end;
+        }
+
+        .report-actions button {
+            padding: 0.5rem 1.25rem;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            cursor: pointer;
+            border: none;
+        }
+
+        .report-cancel {
+            background: #f1f5f9;
+            color: #475569;
+        }
+
+        .report-submit {
+            background: #0ea5e9;
+            color: white;
+        }
+
+        .report-submit:hover {
+            background: #0284c7;
+        }
+
         @media (max-width: 1024px) {
             .cards-grid {
                 grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -672,6 +807,27 @@
                 <button class="btn-close" onclick="closeComparison()">&times;</button>
             </div>
             <div id="comparisonContent"></div>
+        </div>
+    </div>
+
+    <div class="report-modal" id="reportModal">
+        <div class="report-box">
+            <h3>오류 보고</h3>
+            <label>오류 유형</label>
+            <select id="reportType">
+                <option value="데이터 오류">데이터 오류 (숫자/내용 틀림)</option>
+                <option value="누락 데이터">누락 데이터 (빈칸/미기재)</option>
+                <option value="기능 오류">기능 오류 (검색/필터 안됨)</option>
+                <option value="기타">기타</option>
+            </select>
+            <label>대학명 / 전형명</label>
+            <input type="text" id="reportTarget" placeholder="예: 연세대 추천형">
+            <label>오류 내용</label>
+            <textarea id="reportDetail" placeholder="어떤 부분이 잘못되었는지 알려주세요"></textarea>
+            <div class="report-actions">
+                <button class="report-cancel" onclick="closeReport()">취소</button>
+                <button class="report-submit" onclick="submitReport()">보내기</button>
+            </div>
         </div>
     </div>
 
@@ -1183,6 +1339,14 @@
             footer.innerHTML = `
                 <div class="footer-title">데이터 출처</div>
                 <div class="source-list">${sources}</div>
+                <div class="footer-bottom">
+                    <div class="copyright">
+                        &copy; 2025 신도경T &middot; <a href="mailto:pantarei01@cnsa.hs.kr">pantarei01@cnsa.hs.kr</a>
+                    </div>
+                    <button class="btn-report" onclick="openReport()">
+                        <span>&#9888;</span> 오류 보고
+                    </button>
+                </div>
             `;
             footer.style.display = 'block';
         }
@@ -1201,6 +1365,43 @@
                 closeComparison();
             }
         });
+
+        document.getElementById('reportModal').addEventListener('click', (e) => {
+            if (e.target.id === 'reportModal') closeReport();
+        });
+
+        function openReport() {
+            document.getElementById('reportModal').classList.add('show');
+        }
+
+        function closeReport() {
+            document.getElementById('reportModal').classList.remove('show');
+            document.getElementById('reportType').selectedIndex = 0;
+            document.getElementById('reportTarget').value = '';
+            document.getElementById('reportDetail').value = '';
+        }
+
+        function submitReport() {
+            const type = document.getElementById('reportType').value;
+            const target = document.getElementById('reportTarget').value.trim();
+            const detail = document.getElementById('reportDetail').value.trim();
+
+            if (!detail) {
+                alert('오류 내용을 입력해주세요.');
+                return;
+            }
+
+            const subject = encodeURIComponent(`[진학검색 오류보고] ${type}${target ? ' - ' + target : ''}`);
+            const body = encodeURIComponent(
+                `오류 유형: ${type}\n` +
+                `대학/전형: ${target || '(미지정)'}\n` +
+                `내용: ${detail}\n` +
+                `\n---\n페이지: ${location.href}\n시간: ${new Date().toLocaleString('ko-KR')}`
+            );
+
+            window.open(`mailto:pantarei01@cnsa.hs.kr?subject=${subject}&body=${body}`);
+            closeReport();
+        }
 
         init();
     </script>
